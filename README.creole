@@ -1,0 +1,6 @@
+== Conductor OAuth presentation
+
+This is a short [[showoff|https://github.com/schacon/showoff/]] presentation about how we use 2-legged OAuth in [[Aeolus Conductor|https://github.com/aeolusproject/conductor]].
+
+* [[View the presentation|https://n1zyy.github.com/oauth-presentation]]
+* [[Read more about our implementation|https://www.aeolusproject.org/redmine/projects/aeolus/wiki/OAuth]]
