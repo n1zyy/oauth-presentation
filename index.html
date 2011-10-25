@@ -95,53 +95,55 @@
 <h1>2-legged OAuth</h1>
 
 <ul>
-<li>Completely unlike 3-legged</li>
+<li>Completely unlike 3-legged OAuth</li>
 <li>Username = "consumer key"</li>
 <li>Password = "consumer secret"</li>
 </ul>
 
 </div>
-</div><div class="slide" data-transition="none"><div class="content code" ref="one/01_slide/4">
-<p> GET /foo HTTP/1.1
+</div><div class="slide" data-transition="none"><div class="content" ref="one/01_slide/4">
+<h1>OAuth signature in headers</h1>
+
+<pre><code> GET /foo HTTP/1.1
  HOST: localhost
  Auth oauth_consumer_key="1bcd57de-58be-4eec-9321-2744b12049d5",
    oauth_nonce="JTIMw8znaConhbxdPaJ3RGlwYo9byqSJphf9NCV2M",
    oauth_signature="KtQNtAaCTgi4lSa8%2FoaZgF2ltKE%3D",
    oauth_signature_method="HMAC-SHA1",
-   oauth_timestamp="1319479861", oauth_version="1.0"</p>
+   oauth_timestamp="1319479861", oauth_version="1.0"
+</code></pre>
 </div>
 </div><div class="slide" data-transition="none"><div class="content bullets incremental" ref="one/01_slide/5">
 <h1>Setup</h1>
 
 <ul>
-<li>aeolus-configure does it all!</li>
+<li>aeolus-configure does it all!
+
+<ul>
 <li>Uses UUID pairs per-service</li>
 <li>Conductor: src/config/settings.yml</li>
 <li>iwhd: users.js or command-line</li>
 <li>Factory: imagefactory.conf</li>
 </ul>
+</li>
+</ul>
 
 </div>
-</div><div class="slide" data-transition="none"><div class="content code" ref="one/01_slide/6">
+</div><div class="slide" data-transition="none"><div class="content" ref="one/01_slide/6">
 <h1>src/config/settings.yml</h1>
 
-<p>  :iwhd:</p>
-
-<pre><code>:url: http://localhost:9090
-:oauth:
-  :consumer_key: 16f316f4-b8da-439d-b319-d91d48dcf85d
-  :consumer_secret: 6f446eb5-301c-4904-9812-d8a20436471d
-</code></pre>
-
-<p>  :imagefactory:</p>
-
-<pre><code>:url: https://localhost:8075/imagefactory
-:oauth:
-  :consumer_key: 39b9e7be-2c2f-44f9-a530-418e1eaab605
-  :consumer_secret: 1a8fc3ad-83ab-44b5-a0e6-92fc64255ba1
-</code></pre>
+<pre class="sh_makefile"><code>:iwhd:
+  :url: http://localhost:9090
+  :oauth:
+    :consumer_key: 16f316f4-b8da-439d-b319-d91d48dcf85d
+    :consumer_secret: 6f446eb5-301c-4904-9812-d8a20436471d
+:imagefactory:
+  :url: https://localhost:8075/imagefactory
+  :oauth:
+    :consumer_key: 39b9e7be-2c2f-44f9-a530-418e1eaab605
+    :consumer_secret: 1a8fc3ad-83ab-44b5-a0e6-92fc64255ba1</code></pre>
 </div>
-</div><div class="slide" data-transition="none"><div class="content" ref="one/01_slide/7">
+</div><div class="slide" data-transition="none"><div class="content bullets" ref="one/01_slide/7">
 <h1>iwhd</h1>
 
 <ul>
@@ -150,36 +152,41 @@
 </ul>
 
 </div>
-</div><div class="slide" data-transition="none"><div class="content code" ref="one/01_slide/8">
-<p>  iwhd -c /etc/iwhd/conf.js -d localhost:27017 \
-  -l /var/log/iwhd.log -v -o \
-  -U 2014e046-e2e1-4112-b734-f5e7d7a56f2e:01f1576e-6bf7-455f-afb0-f5368eec9047</p>
+</div><div class="slide" data-transition="none"><div class="content commandline" ref="one/01_slide/8">
+<pre><code><code class="command">$ ps aux | grep iwhd</code>
+<code class="result">iwhd -c /etc/iwhd/conf.js -d localhost:27017 \
+-l /var/log/iwhd.log -v -o \
+-U 2014e046-e2e1-4112-b734-f5e7d7a56f2e:01f1576e-6bf7-455f-afb0-f5368eec9047
+</code></code></pre>
 </div>
 </div><div class="slide" data-transition="none"><div class="content" ref="one/01_slide/9">
 <h1>imagefactory.conf</h1>
 
 <ul>
-<li>Two pairs!</li>
+<li>Two pairs of keys
+
+<ul>
 <li>warehouse_key and warehouse_secret used for Factory -&gt; iwhd</li>
 <li>clients block used for Conductor -&gt; Factory</li>
+</ul>
+</li>
 </ul>
 
 </div>
 </div><div class="slide" data-transition="none"><div class="content" ref="one/01_slide/10">
-<p>  @@@ javascript
-  {</p>
+<h1>imagefactory.conf</h1>
 
-<pre><code>"warehouse": "http://localhost:9090/",
-"warehouse_key": "16f316f4-b8da-439d-b319-d91d48dcf85d",
-"warehouse_secret": "6f446eb5-301c-4904-9812-d8a20436471d",
-"ec2_ami_type": "s3",
-"clients": {
-  "39b9e7be-2c2f-44f9-a530-418e1eaab605": "1a8fc3ad-83ab-44b5-a0e6-92fc64255ba1"
-  },
-"proxy_ami_id": "ami-id"
+<pre><code>{
+  "warehouse": "http://localhost:9090/",
+  "warehouse_key": "16f316f4-b8da-439d-b319-d91d48dcf85d",
+  "warehouse_secret": "6f446eb5-301c-4904-9812-d8a20436471d",
+  "ec2_ami_type": "s3",
+  "clients": {
+    "39b9e7be-2c2f-44f9-a530-418e1eaab605": "1a8fc3ad-83ab-44b5-a0e6-92fc64255ba1"
+    },
+  "proxy_ami_id": "ami-id"
+}
 </code></pre>
-
-<p>  }</p>
 </div>
 </div></div>
 
